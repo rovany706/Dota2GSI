@@ -7,15 +7,16 @@ using System.Threading;
 
 namespace Dota2GSI
 {
-    public delegate void NewGameStateHandler(GameState gamestate);
+    public delegate void NewGameStateHandler(GameState gameState);
 
     public class GameStateListener : IDisposable
     {
-        private bool isRunning = false;
-        private int connection_port;
-        private HttpListener net_Listener;
-        private AutoResetEvent waitForConnection = new AutoResetEvent(false);
+        private bool isRunning;
+        private int connectionPort;
+        private HttpListener netListener;
+        private AutoResetEvent waitForConnection = new(false);
         private GameState currentGameState;
+        private Thread _listenerThread;
 
         public GameState CurrentGameState
         {
@@ -33,7 +34,7 @@ namespace Dota2GSI
         /// <summary>
         /// Gets the port that is being listened
         /// </summary>
-        public int Port { get { return connection_port; } }
+        public int Port { get { return connectionPort; } }
 
         /// <summary>
         /// Returns whether or not the listener is running
@@ -51,9 +52,9 @@ namespace Dota2GSI
         /// <param name="Port"></param>
         public GameStateListener(int Port)
         {
-            connection_port = Port;
-            net_Listener = new HttpListener();
-            net_Listener.Prefixes.Add("http://localhost:" + Port + "/");
+            connectionPort = Port;
+            netListener = new HttpListener();
+            netListener.Prefixes.Add($"http://127.0.0.1:{Port}/");
         }
 
         /// <summary>
@@ -65,16 +66,16 @@ namespace Dota2GSI
             if (!URI.EndsWith("/"))
                 URI += "/";
 
-            Regex URIPattern = new Regex("^https?:\\/\\/.+:([0-9]*)\\/$", RegexOptions.IgnoreCase);
-            Match PortMatch = URIPattern.Match(URI);
+            var URIPattern = new Regex(@"^https?:\/\/.+:([0-9]*)\/$", RegexOptions.IgnoreCase);
+            var PortMatch = URIPattern.Match(URI);
 
             if (!PortMatch.Success)
                 throw new ArgumentException("Not a valid URI: " + URI);
 
-            connection_port = Convert.ToInt32(PortMatch.Groups[1].Value);
+            connectionPort = Convert.ToInt32(PortMatch.Groups[1].Value);
 
-            net_Listener = new HttpListener();
-            net_Listener.Prefixes.Add(URI);
+            netListener = new HttpListener();
+            netListener.Prefixes.Add(URI);
         }
 
         /// <summary>
@@ -82,28 +83,27 @@ namespace Dota2GSI
         /// </summary>
         public bool Start()
         {
-            if (!isRunning)
+            if (isRunning) return false;
+            
+            _listenerThread = new Thread(Run);
+            try
             {
-                Thread ListenerThread = new Thread(new ThreadStart(Run));
-                try
-                {
-                    net_Listener.Start();
-                }
-                catch (HttpListenerException)
-                {
-                    return false;
-                }
-                isRunning = true;
-
-                // Set this to true, so when the program wants to terminate,
-                // this thread won't stop the program from exiting.
-                ListenerThread.IsBackground = true;
-
-                ListenerThread.Start();
-                return true;
+                netListener.Start();
             }
+            catch (HttpListenerException)
+            {
+                netListener.Close();
+                return false;
+            }
+            isRunning = true;
 
-            return false;
+            // Set this to true, so when the program wants to terminate,
+            // this thread won't stop the program from exiting.
+            _listenerThread.IsBackground = true;
+
+            _listenerThread.Start();
+            return true;
+
         }
 
         /// <summary>
@@ -118,35 +118,35 @@ namespace Dota2GSI
         {
             while (isRunning)
             {
-                net_Listener.BeginGetContext(ReceiveGameState, net_Listener);
+                netListener.BeginGetContext(ReceiveGameState, netListener);
                 waitForConnection.WaitOne();
                 waitForConnection.Reset();
             }
-            net_Listener.Stop();
+            netListener.Stop();
         }
 
         private void ReceiveGameState(IAsyncResult result)
         {
             try
             {
-                HttpListenerContext context = net_Listener.EndGetContext(result);
-                HttpListenerRequest request = context.Request;
-                string JSON;
+                var context = netListener.EndGetContext(result);
+                var request = context.Request;
+                string json;
 
                 waitForConnection.Set();
 
-                using (Stream inputStream = request.InputStream)
+                using (var inputStream = request.InputStream)
                 {
-                    using (StreamReader sr = new StreamReader(inputStream))
-                        JSON = sr.ReadToEnd();
+                    using (var sr = new StreamReader(inputStream))
+                        json = sr.ReadToEnd();
                 }
-                using (HttpListenerResponse response = context.Response)
+                using (var response = context.Response)
                 {
                     response.StatusCode = (int)HttpStatusCode.OK;
                     response.StatusDescription = "OK";
                     response.Close();
                 }
-                CurrentGameState = new GameState(JSON);
+                CurrentGameState = new GameState(json);
             }
             catch (ObjectDisposedException)
             {
@@ -156,10 +156,10 @@ namespace Dota2GSI
 
         private void RaiseOnNewGameState()
         {
-            foreach (Delegate d in NewGameState.GetInvocationList())
+            foreach (var d in NewGameState.GetInvocationList())
             {
-                if (d.Target is ISynchronizeInvoke)
-                    (d.Target as ISynchronizeInvoke).BeginInvoke(d, new object[] { CurrentGameState });
+                if (d.Target is ISynchronizeInvoke invoker)
+                    invoker.BeginInvoke(d, new object[] { CurrentGameState });
                 else
                     d.DynamicInvoke(CurrentGameState);
             }
@@ -167,9 +167,10 @@ namespace Dota2GSI
 
         public void Dispose()
         {
-            this.Stop();
-            this.waitForConnection.Dispose();
-            this.net_Listener.Close();
+            Stop();
+            _listenerThread.Interrupt();
+            waitForConnection.Dispose();
+            netListener.Close();
         }
     }
 }

@@ -9,7 +9,7 @@ namespace Dota2GSI.Nodes
     /// </summary>
     public class Abilities : Node, IEnumerable<Ability>
     {
-        private List<Ability> abilities = new List<Ability>();
+        private List<Ability> abilities = new();
 
         /// <summary>
         /// The attributes a hero has to spend on abilities
@@ -23,12 +23,12 @@ namespace Dota2GSI.Nodes
         /// </summary>
         public int Count { get { return abilities.Count; } }
 
-        internal Abilities(string json_data) : base(json_data)
+        internal Abilities(string jsonData) : base(jsonData)
         {
-            json = json_data;
+            json = jsonData;
 
-            List<string> abilities = _ParsedData.Properties().Select(p => p.Name).ToList();
-            foreach (string ability_slot in abilities)
+            var abilities = _ParsedData.Properties().Select(p => p.Name).ToList();
+            foreach (var ability_slot in abilities)
             {
                 if (ability_slot.Equals("attributes"))
                     Attributes = new Attributes(_ParsedData[ability_slot].ToString());

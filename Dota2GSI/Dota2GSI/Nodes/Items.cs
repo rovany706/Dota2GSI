@@ -47,8 +47,8 @@ namespace Dota2GSI.Nodes
 
         internal Items(string json_data) : base(json_data)
         {
-            List<string> slots = _ParsedData.Properties().Select(p => p.Name).ToList();
-            foreach (string item_slot in slots)
+            var slots = _ParsedData.Properties().Select(p => p.Name).ToList();
+            foreach (var item_slot in slots)
             {
                 if (item_slot.StartsWith("slot"))
                     this.inventory.Add(new Item(_ParsedData[item_slot].ToString()));
@@ -90,7 +90,7 @@ namespace Dota2GSI.Nodes
         /// <returns>A boolean if item is in the inventory</returns>
         public bool InventoryContains(string itemname)
         {
-            foreach (Item inventory_item in this.inventory)
+            foreach (var inventory_item in this.inventory)
             {
                 if (inventory_item.Name == itemname)
                     return true;
@@ -106,7 +106,7 @@ namespace Dota2GSI.Nodes
         /// <returns>A boolean if item is in the stash</returns>
         public bool StashContains(string itemname)
         {
-            foreach (Item stash_item in this.stash)
+            foreach (var stash_item in this.stash)
             {
                 if (stash_item.Name == itemname)
                     return true;
@@ -122,8 +122,8 @@ namespace Dota2GSI.Nodes
         /// <returns>The first index at which item is found, -1 if not found.</returns>
         public int InventoryIndexOf(string itemname)
         {
-            int index = -1;
-            for (int x = 0; x < this.inventory.Count; x++)
+            var index = -1;
+            for (var x = 0; x < this.inventory.Count; x++)
             {
                 if (this.inventory[x].Name == itemname)
                     return x;
@@ -139,8 +139,8 @@ namespace Dota2GSI.Nodes
         /// <returns>The first index at which item is found, -1 if not found.</returns>
         public int StashIndexOf(string itemname)
         {
-            int index = -1;
-            for (int x = 0; x < this.stash.Count; x++)
+            var index = -1;
+            for (var x = 0; x < this.stash.Count; x++)
             {
                 if (this.stash[x].Name == itemname)
                     return x;
