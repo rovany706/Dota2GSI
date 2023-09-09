@@ -44,7 +44,7 @@ namespace Dota2GSI
         /// <summary>
         ///  Event for handing a newly received game state
         /// </summary>
-        public event NewGameStateHandler NewGameState = delegate { };
+        public event EventHandler<GameState> NewGameState;
 
         /// <summary>
         /// A GameStateListener that listens for connections on http://localhost:port/
@@ -159,16 +159,15 @@ namespace Dota2GSI
             foreach (var d in NewGameState.GetInvocationList())
             {
                 if (d.Target is ISynchronizeInvoke invoker)
-                    invoker.BeginInvoke(d, new object[] { CurrentGameState });
+                    invoker.BeginInvoke(d, new object[] { this, CurrentGameState });
                 else
-                    d.DynamicInvoke(CurrentGameState);
+                    d.DynamicInvoke(this, CurrentGameState);
             }
         }
 
         public void Dispose()
         {
             Stop();
-            _listenerThread.Interrupt();
             waitForConnection.Dispose();
             netListener.Close();
         }
