@@ -1,0 +1,123 @@
+{
+  "items": {
+    "slot0": {
+      "name": "item_octarine_core",
+      "purchaser": 0,
+      "item_level": 1,
+      "passive": true
+    },
+    "slot1": {
+      "name": "item_blink",
+      "purchaser": 0,
+      "item_level": 1,
+      "can_cast": true,
+      "cooldown": 0,
+      "passive": false
+    },
+    "slot2": {
+      "name": "item_travel_boots",
+      "purchaser": 0,
+      "item_level": 1,
+      "passive": true
+    },
+    "slot3": {
+      "name": "item_black_king_bar",
+      "purchaser": 0,
+      "item_level": 1,
+      "can_cast": true,
+      "cooldown": 0,
+      "passive": false
+    },
+    "slot4": {
+      "name": "item_pipe",
+      "purchaser": 0,
+      "item_level": 1,
+      "can_cast": true,
+      "cooldown": 0,
+      "passive": false
+    },
+    "slot5": {
+      "name": "empty"
+    },
+    "slot6": {
+      "name": "item_tango",
+      "purchaser": 0,
+      "item_level": 1,
+      "can_cast": true,
+      "cooldown": 0,
+      "passive": false,
+      "charges": 3
+    },
+    "slot7": {
+      "name": "item_magic_wand",
+      "purchaser": 0,
+      "item_level": 1,
+      "can_cast": false,
+      "cooldown": 0,
+      "passive": false,
+      "charges": 0
+    },
+    "slot8": {
+      "name": "item_enchanted_mango",
+      "purchaser": 0,
+      "item_level": 1,
+      "can_cast": true,
+      "cooldown": 0,
+      "passive": false,
+      "charges": 1
+    },
+    "stash0": {
+      "name": "item_heavens_halberd",
+      "purchaser": 0,
+      "item_level": 1,
+      "can_cast": true,
+      "cooldown": 0,
+      "passive": false
+    },
+    "stash1": {
+      "name": "item_crimson_guard",
+      "purchaser": 0,
+      "item_level": 1,
+      "can_cast": true,
+      "cooldown": 0,
+      "passive": false
+    },
+    "stash2": {
+      "name": "item_lotus_orb",
+      "purchaser": 0,
+      "item_level": 1,
+      "can_cast": true,
+      "cooldown": 0,
+      "passive": false
+    },
+    "stash3": {
+      "name": "item_silver_edge",
+      "purchaser": 0,
+      "item_level": 1,
+      "can_cast": true,
+      "cooldown": 0,
+      "passive": false
+    },
+    "stash4": {
+      "name": "empty"
+    },
+    "stash5": {
+      "name": "empty"
+    },
+    "teleport0": {
+      "name": "item_tpscroll",
+      "purchaser": 0,
+      "item_level": 1,
+      "can_cast": false,
+      "cooldown": 62,
+      "passive": false,
+      "charges": 1
+    },
+    "neutral0": {
+      "name": "item_timeless_relic",
+      "purchaser": 0,
+      "item_level": 1,
+      "passive": true
+    }
+  }
+}

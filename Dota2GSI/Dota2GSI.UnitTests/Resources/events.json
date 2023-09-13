@@ -1,0 +1,24 @@
+{
+  "events": [
+    {
+      "game_time": 841,
+      "event_type": "bounty_rune_pickup",
+      "player_id": 5,
+      "team": "dire",
+      "bounty_value": 45,
+      "team_gold": 225
+    },
+    {
+      "game_time": 121,
+      "event_type": "aegis_picked_up",
+      "player_id": 0,
+      "snatched": false
+    },
+    {
+      "game_time": 117,
+      "event_type": "roshan_killed",
+      "killed_by_team": "radiant",
+      "killer_player_id": 0
+    }
+  ]
+}

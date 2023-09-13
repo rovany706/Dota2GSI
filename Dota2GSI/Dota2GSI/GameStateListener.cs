@@ -4,6 +4,7 @@ using System.IO;
 using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading;
+using Dota2GSI.Json;
 
 namespace Dota2GSI
 {
@@ -17,13 +18,11 @@ namespace Dota2GSI
         private AutoResetEvent waitForConnection = new(false);
         private GameState currentGameState;
         private Thread _listenerThread;
+        private Serializer serializer = new Serializer();
 
         public GameState CurrentGameState
         {
-            get
-            {
-                return currentGameState;
-            }
+            get { return currentGameState; }
             private set
             {
                 currentGameState = value;
@@ -34,12 +33,18 @@ namespace Dota2GSI
         /// <summary>
         /// Gets the port that is being listened
         /// </summary>
-        public int Port { get { return connectionPort; } }
+        public int Port
+        {
+            get { return connectionPort; }
+        }
 
         /// <summary>
         /// Returns whether or not the listener is running
         /// </summary>
-        public bool Running { get { return isRunning; } }
+        public bool Running
+        {
+            get { return isRunning; }
+        }
 
         /// <summary>
         ///  Event for handing a newly received game state
@@ -84,8 +89,9 @@ namespace Dota2GSI
         public bool Start()
         {
             if (isRunning) return false;
-            
+
             _listenerThread = new Thread(Run);
+
             try
             {
                 netListener.Start();
@@ -95,6 +101,7 @@ namespace Dota2GSI
                 netListener.Close();
                 return false;
             }
+
             isRunning = true;
 
             // Set this to true, so when the program wants to terminate,
@@ -103,7 +110,6 @@ namespace Dota2GSI
 
             _listenerThread.Start();
             return true;
-
         }
 
         /// <summary>
@@ -122,6 +128,7 @@ namespace Dota2GSI
                 waitForConnection.WaitOne();
                 waitForConnection.Reset();
             }
+
             netListener.Stop();
         }
 
@@ -140,13 +147,15 @@ namespace Dota2GSI
                     using (var sr = new StreamReader(inputStream))
                         json = sr.ReadToEnd();
                 }
+
                 using (var response = context.Response)
                 {
                     response.StatusCode = (int)HttpStatusCode.OK;
                     response.StatusDescription = "OK";
                     response.Close();
                 }
-                CurrentGameState = new GameState(json);
+                
+                CurrentGameState = this.serializer.Deserialize<GameState>(json);
             }
             catch (ObjectDisposedException)
             {

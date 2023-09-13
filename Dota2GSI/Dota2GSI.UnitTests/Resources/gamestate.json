@@ -1,0 +1,405 @@
+{
+  "provider": {
+    "name": "Dota 2",
+    "appid": 570,
+    "version": 47,
+    "timestamp": 1694530163
+  },
+  "map": {
+    "name": "start",
+    "matchid": "7331674997",
+    "game_time": 126,
+    "clock_time": 25,
+    "daytime": true,
+    "nightstalker_night": false,
+    "radiant_score": 0,
+    "dire_score": 0,
+    "game_state": "DOTA_GAMERULES_STATE_GAME_IN_PROGRESS",
+    "paused": false,
+    "win_team": "none",
+    "customgamename": "",
+    "ward_purchase_cooldown": 0
+  },
+  "player": {
+    "steamid": "11111111111111111",
+    "accountid": "11111111",
+    "name": "ayylmao",
+    "activity": "playing",
+    "kills": 0,
+    "deaths": 0,
+    "assists": 0,
+    "last_hits": 1,
+    "denies": 0,
+    "kill_streak": 0,
+    "commands_issued": 122,
+    "kill_list": {
+
+    },
+    "team_name": "radiant",
+    "player_slot": 1,
+    "team_slot": 0,
+    "gold": 70127,
+    "gold_reliable": 38,
+    "gold_unreliable": 70089,
+    "gold_from_hero_kills": 0,
+    "gold_from_creep_kills": 0,
+    "gold_from_income": 38,
+    "gold_from_shared": 0,
+    "gpm": 2372369,
+    "xpm": 152723
+  },
+  "hero": {
+    "xpos": 7711,
+    "ypos": -7878,
+    "id": 100,
+    "name": "npc_dota_hero_tusk",
+    "level": 30,
+    "xp": 64400,
+    "alive": true,
+    "respawn_seconds": 0,
+    "buyback_cost": 7929,
+    "buyback_cooldown": 0,
+    "health": 3736,
+    "max_health": 3745,
+    "health_percent": 99,
+    "mana": 1047,
+    "max_mana": 1047,
+    "mana_percent": 100,
+    "silenced": false,
+    "stunned": false,
+    "disarmed": false,
+    "magicimmune": false,
+    "hexed": false,
+    "muted": false,
+    "break": false,
+    "aghanims_scepter": false,
+    "aghanims_shard": false,
+    "smoked": false,
+    "has_debuff": false,
+    "talent_1": true,
+    "talent_2": true,
+    "talent_3": true,
+    "talent_4": true,
+    "talent_5": true,
+    "talent_6": true,
+    "talent_7": true,
+    "talent_8": true,
+    "attributes_level": 7
+  },
+  "abilities": {
+    "ability0": {
+      "name": "tusk_ice_shards",
+      "level": 4,
+      "can_cast": true,
+      "passive": false,
+      "ability_active": true,
+      "cooldown": 0,
+      "ultimate": false
+    },
+    "ability1": {
+      "name": "tusk_snowball",
+      "level": 4,
+      "can_cast": true,
+      "passive": false,
+      "ability_active": true,
+      "cooldown": 0,
+      "ultimate": false
+    },
+    "ability2": {
+      "name": "tusk_tag_team",
+      "level": 4,
+      "can_cast": true,
+      "passive": false,
+      "ability_active": true,
+      "cooldown": 0,
+      "ultimate": false
+    },
+    "ability3": {
+      "name": "tusk_walrus_punch",
+      "level": 3,
+      "can_cast": true,
+      "passive": false,
+      "ability_active": true,
+      "cooldown": 0,
+      "ultimate": true
+    },
+    "ability4": {
+      "name": "plus_high_five",
+      "level": 1,
+      "can_cast": true,
+      "passive": false,
+      "ability_active": true,
+      "cooldown": 0,
+      "ultimate": false
+    },
+    "ability5": {
+      "name": "plus_guild_banner",
+      "level": 1,
+      "can_cast": true,
+      "passive": false,
+      "ability_active": true,
+      "cooldown": 0,
+      "ultimate": false
+    },
+    "ability6": {
+      "name": "seasonal_10th_anniversary_party_hat",
+      "level": 1,
+      "can_cast": true,
+      "passive": false,
+      "ability_active": true,
+      "cooldown": 0,
+      "ultimate": false
+    }
+  },
+  "items": {
+    "slot0": {
+      "name": "item_octarine_core",
+      "purchaser": 0,
+      "item_level": 1,
+      "passive": true
+    },
+    "slot1": {
+      "name": "item_blink",
+      "purchaser": 0,
+      "item_level": 1,
+      "can_cast": true,
+      "cooldown": 0,
+      "passive": false
+    },
+    "slot2": {
+      "name": "item_travel_boots",
+      "purchaser": 0,
+      "item_level": 1,
+      "passive": true
+    },
+    "slot3": {
+      "name": "item_black_king_bar",
+      "purchaser": 0,
+      "item_level": 1,
+      "can_cast": true,
+      "cooldown": 0,
+      "passive": false
+    },
+    "slot4": {
+      "name": "item_pipe",
+      "purchaser": 0,
+      "item_level": 1,
+      "can_cast": true,
+      "cooldown": 0,
+      "passive": false
+    },
+    "slot5": {
+      "name": "empty"
+    },
+    "slot6": {
+      "name": "item_tango",
+      "purchaser": 0,
+      "item_level": 1,
+      "can_cast": true,
+      "cooldown": 0,
+      "passive": false,
+      "charges": 3
+    },
+    "slot7": {
+      "name": "item_magic_wand",
+      "purchaser": 0,
+      "item_level": 1,
+      "can_cast": false,
+      "cooldown": 0,
+      "passive": false,
+      "charges": 0
+    },
+    "slot8": {
+      "name": "item_enchanted_mango",
+      "purchaser": 0,
+      "item_level": 1,
+      "can_cast": true,
+      "cooldown": 0,
+      "passive": false,
+      "charges": 1
+    },
+    "stash0": {
+      "name": "item_heavens_halberd",
+      "purchaser": 0,
+      "item_level": 1,
+      "can_cast": true,
+      "cooldown": 0,
+      "passive": false
+    },
+    "stash1": {
+      "name": "item_crimson_guard",
+      "purchaser": 0,
+      "item_level": 1,
+      "can_cast": true,
+      "cooldown": 0,
+      "passive": false
+    },
+    "stash2": {
+      "name": "item_lotus_orb",
+      "purchaser": 0,
+      "item_level": 1,
+      "can_cast": true,
+      "cooldown": 0,
+      "passive": false
+    },
+    "stash3": {
+      "name": "item_silver_edge",
+      "purchaser": 0,
+      "item_level": 1,
+      "can_cast": true,
+      "cooldown": 0,
+      "passive": false
+    },
+    "stash4": {
+      "name": "empty"
+    },
+    "stash5": {
+      "name": "empty"
+    },
+    "teleport0": {
+      "name": "item_tpscroll",
+      "purchaser": 0,
+      "item_level": 1,
+      "can_cast": false,
+      "cooldown": 62,
+      "passive": false,
+      "charges": 1
+    },
+    "neutral0": {
+      "name": "item_timeless_relic",
+      "purchaser": 0,
+      "item_level": 1,
+      "passive": true
+    }
+  },
+  "buildings": {
+    "radiant": {
+      "dota_goodguys_tower1_top": {
+        "health": 1800,
+        "max_health": 1800
+      },
+      "dota_goodguys_tower2_top": {
+        "health": 2500,
+        "max_health": 2500
+      },
+      "dota_goodguys_tower3_top": {
+        "health": 2500,
+        "max_health": 2500
+      },
+      "dota_goodguys_tower1_mid": {
+        "health": 1800,
+        "max_health": 1800
+      },
+      "dota_goodguys_tower2_mid": {
+        "health": 2500,
+        "max_health": 2500
+      },
+      "dota_goodguys_tower3_mid": {
+        "health": 2500,
+        "max_health": 2500
+      },
+      "dota_goodguys_tower1_bot": {
+        "health": 1800,
+        "max_health": 1800
+      },
+      "dota_goodguys_tower2_bot": {
+        "health": 2500,
+        "max_health": 2500
+      },
+      "dota_goodguys_tower3_bot": {
+        "health": 2500,
+        "max_health": 2500
+      },
+      "dota_goodguys_tower4_top": {
+        "health": 2600,
+        "max_health": 2600
+      },
+      "dota_goodguys_tower4_bot": {
+        "health": 2600,
+        "max_health": 2600
+      },
+      "good_rax_melee_top": {
+        "health": 2200,
+        "max_health": 2200
+      },
+      "good_rax_range_top": {
+        "health": 1300,
+        "max_health": 1300
+      },
+      "good_rax_melee_mid": {
+        "health": 2200,
+        "max_health": 2200
+      },
+      "good_rax_range_mid": {
+        "health": 1300,
+        "max_health": 1300
+      },
+      "good_rax_melee_bot": {
+        "health": 2200,
+        "max_health": 2200
+      },
+      "good_rax_range_bot": {
+        "health": 1300,
+        "max_health": 1300
+      },
+      "dota_goodguys_fort": {
+        "health": 4500,
+        "max_health": 4500
+      }
+    }
+  },
+  "draft": {
+
+  },
+  "wearables": {
+    "wearable0": 4097,
+    "wearable1": 4460,
+    "wearable2": 4498,
+    "wearable3": 4441,
+    "wearable4": 4123,
+    "wearable5": 4499,
+    "wearable6": 8639,
+    "wearable7": 8632,
+    "wearable8": 541,
+    "wearable9": 792,
+    "wearable10": 790,
+    "wearable11": 14912
+  },
+  "events": [
+    {
+      "game_time": 121,
+      "event_type": "aegis_picked_up",
+      "player_id": 0,
+      "snatched": false
+    },
+    {
+      "game_time": 117,
+      "event_type": "roshan_killed",
+      "killed_by_team": "radiant",
+      "killer_player_id": 0
+    }
+  ]
+,
+  "previously": {
+    "map": {
+      "game_time": 125,
+      "clock_time": 24
+    },
+    "player": {
+      "gold": 70126,
+      "gold_reliable": 37,
+      "gold_from_income": 37,
+      "gpm": 2482973,
+      "xpm": 159843
+    },
+    "hero": {
+      "xpos": 7641,
+      "ypos": -7833,
+      "buyback_cost": 7928,
+      "health": 3718
+    }
+  },
+  "auth": {
+    "token": "token"
+  }
+}
