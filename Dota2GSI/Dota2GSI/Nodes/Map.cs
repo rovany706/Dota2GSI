@@ -62,7 +62,9 @@ public enum DotaGameState
     /// <summary>
     /// Game is a custom game
     /// </summary>
-    DOTA_GAMERULES_STATE_CUSTOM_GAME_SETUP
+    DOTA_GAMERULES_STATE_CUSTOM_GAME_SETUP,
+    
+    DOTA_GAMERULES_STATE_WAIT_FOR_MAP_TO_LOAD
 }
 
 /// <summary>
