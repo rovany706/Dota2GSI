@@ -1,3 +1,5 @@
+#nullable enable
+
 using System.Collections.Generic;
 using Dota2GSI.Nodes;
 using Dota2GSI.Nodes.Abilities;
@@ -8,11 +10,11 @@ namespace Dota2GSI;
 
 public record GameState(
     Provider Provider,
-    Map Map,
-    Player Player,
-    DotaAbilities Abilities,
-    Hero Hero,
+    Map? Map,
+    Player? Player,
+    DotaAbilities? Abilities,
+    Hero? Hero,
     Auth Auth,
-    DotaItems Items,
+    DotaItems? Items,
     List<DotaEvent> Events
 );

@@ -9,8 +9,8 @@ public enum DotaEventType
 {
     [EnumMember(Value = "bounty_rune_pickup")]
     BountyPickup,
-    [EnumMember(Value = "roshan_killed")] RoshanKilled,
-
+    [EnumMember(Value = "roshan_killed")] 
+    RoshanKilled,
     [EnumMember(Value = "aegis_picked_up")]
     AegisPickup
 }
