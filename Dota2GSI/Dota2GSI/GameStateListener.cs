@@ -1,10 +1,19 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
 using System.Net;
-using System.Text.RegularExpressions;
 using System.Threading;
 using Dota2GSI.Json;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
+
+// ReSharper disable UnusedType.Global
+// ReSharper disable MemberCanBePrivate.Global
+// ReSharper disable UnusedMember.Global
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 
 namespace Dota2GSI
 {
@@ -12,17 +21,16 @@ namespace Dota2GSI
 
     public class GameStateListener : IDisposable
     {
-        private bool isRunning;
-        private int connectionPort;
-        private HttpListener netListener;
-        private AutoResetEvent waitForConnection = new(false);
-        private GameState currentGameState;
-        private Thread _listenerThread;
-        private Serializer serializer = new();
+        private readonly ILogger<GameStateListener> logger;
+        private readonly HttpListener netListener;
+        private readonly AutoResetEvent waitForConnection = new(false);
+        private GameState? currentGameState;
+        private Thread listenerThread;
+        private readonly Serializer serializer = new();
 
-        public GameState CurrentGameState
+        public GameState? CurrentGameState
         {
-            get { return currentGameState; }
+            get => currentGameState;
             private set
             {
                 currentGameState = value;
@@ -33,54 +41,60 @@ namespace Dota2GSI
         /// <summary>
         /// Gets the port that is being listened
         /// </summary>
-        public int Port
-        {
-            get { return connectionPort; }
-        }
+        public int Port { get; }
 
         /// <summary>
         /// Returns whether or not the listener is running
         /// </summary>
-        public bool Running
-        {
-            get { return isRunning; }
-        }
+        public bool Running { get; private set; }
 
         /// <summary>
         ///  Event for handing a newly received game state
         /// </summary>
-        public event EventHandler<GameState> NewGameState;
+        public event EventHandler<GameState?> NewGameState;
 
         /// <summary>
         /// A GameStateListener that listens for connections on http://localhost:port/
         /// </summary>
-        /// <param name="Port"></param>
-        public GameStateListener(int Port)
+        /// <param name="port"></param>
+        /// <param name="loggerFactory">Logger</param>
+        public GameStateListener(int port, ILoggerFactory? loggerFactory = null)
+            : this($"http://127.0.0.1:{port}/", loggerFactory)
         {
-            connectionPort = Port;
-            netListener = new HttpListener();
-            netListener.Prefixes.Add($"http://127.0.0.1:{Port}/");
         }
 
         /// <summary>
         /// A GameStateListener that listens for connections to the specified URI
         /// </summary>
-        /// <param name="URI">The URI to listen to</param>
-        public GameStateListener(string URI)
+        /// <param name="uri">The URI to listen to</param>
+        /// <param name="loggerFactory">Logger</param>
+        public GameStateListener(string uri, ILoggerFactory? loggerFactory = null)
         {
-            if (!URI.EndsWith("/"))
-                URI += "/";
+            this.logger = loggerFactory?.CreateLogger<GameStateListener>()
+                          ?? NullLoggerFactory.Instance.CreateLogger<GameStateListener>();
+            
+            if (!uri.EndsWith("/"))
+                uri += "/";
 
-            var URIPattern = new Regex(@"^https?:\/\/.+:([0-9]*)\/$", RegexOptions.IgnoreCase);
-            var PortMatch = URIPattern.Match(URI);
-
-            if (!PortMatch.Success)
-                throw new ArgumentException("Not a valid URI: " + URI);
-
-            connectionPort = Convert.ToInt32(PortMatch.Groups[1].Value);
+            var port = GetPortFromUri(uri);
+            Port = port;
 
             netListener = new HttpListener();
-            netListener.Prefixes.Add(URI);
+            netListener.Prefixes.Add(uri);
+        }
+
+        private static int GetPortFromUri(string uriString)
+        {
+            try
+            {
+                var uri = new Uri(uriString);
+
+                return uri.Port;
+            }
+            catch (Exception)
+            {
+                throw new ArgumentException("Not a valid URI: " + uriString);
+            }
         }
 
         /// <summary>
@@ -88,9 +102,9 @@ namespace Dota2GSI
         /// </summary>
         public bool Start()
         {
-            if (isRunning) return false;
+            if (Running) return false;
 
-            _listenerThread = new Thread(Run);
+            listenerThread = new Thread(Run);
 
             try
             {
@@ -99,16 +113,17 @@ namespace Dota2GSI
             catch (HttpListenerException)
             {
                 netListener.Close();
+                logger.LogError("Could not establish connection to {prefix}, port: {port}", netListener.Prefixes.First(), Port);
                 return false;
             }
 
-            isRunning = true;
+            Running = true;
 
             // Set this to true, so when the program wants to terminate,
             // this thread won't stop the program from exiting.
-            _listenerThread.IsBackground = true;
+            listenerThread.IsBackground = true;
 
-            _listenerThread.Start();
+            listenerThread.Start();
             return true;
         }
 
@@ -117,12 +132,12 @@ namespace Dota2GSI
         /// </summary>
         public void Stop()
         {
-            isRunning = false;
+            Running = false;
         }
 
         private void Run()
         {
-            while (isRunning)
+            while (Running)
             {
                 netListener.BeginGetContext(ReceiveGameState, netListener);
                 waitForConnection.WaitOne();
@@ -154,12 +169,25 @@ namespace Dota2GSI
                     response.StatusDescription = "OK";
                     response.Close();
                 }
-                
-                CurrentGameState = this.serializer.Deserialize<GameState>(json);
+
+                CurrentGameState = TryDeserializeCurrentGameState(json);
             }
             catch (ObjectDisposedException)
             {
                 // Intentionally left blank, when the Listener is closed.
+            }
+        }
+
+        private GameState? TryDeserializeCurrentGameState(string json)
+        {
+            try
+            {
+                return this.serializer.Deserialize<GameState>(json);
+            }
+            catch (Exception e)
+            {
+                logger.LogWarning("Deserialization failed:\n{e}", e);
+                return null;
             }
         }
 
@@ -179,6 +207,7 @@ namespace Dota2GSI
             Stop();
             waitForConnection.Dispose();
             netListener.Close();
+            GC.SuppressFinalize(this);
         }
     }
 }
