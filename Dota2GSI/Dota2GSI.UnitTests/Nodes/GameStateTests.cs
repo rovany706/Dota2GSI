@@ -10,8 +10,8 @@ public class GameStateTests : JsonDeserializeTests
 {
     private readonly GameState testGameState = new(
         new Provider("Dota 2", 570, 47, 1694530163),
-        new Map("start", "7331674997", 126, 25, true, false, 0, 0, DotaGameState.DOTA_GAMERULES_STATE_GAME_IN_PROGRESS, false,
-            PlayerTeam.None, "", 0),
+        new Map("start", "7331674997", 126, 25, true, false, 0, 0, DotaGameState.DOTA_GAMERULES_STATE_GAME_IN_PROGRESS,
+            false, PlayerTeam.None, "", 0),
         new Player("11111111111111111", "11111111", "ayylmao", "playing", 0, 0, 0, 1, 0, 0, 122, "radiant", 1, 0,
             70127, 38, 70089, 0, 0, 38, 0, 2372369, 152723),
         new DotaAbilities(new[]
@@ -63,117 +63,117 @@ public class GameStateTests : JsonDeserializeTests
     {
         var json = LoadFile("gamestate.json");
         var serializer = new Serializer();
-        
+
         var actual = serializer.Deserialize<GameState>(json);
 
         Assert.That(actual.Provider, Is.EqualTo(this.testGameState.Provider));
     }
-    
+
     [Test]
     public void Deserialize_Always_ReturnExpectedGameStateMap()
     {
         var json = LoadFile("gamestate.json");
         var serializer = new Serializer();
-        
+
         var actual = serializer.Deserialize<GameState>(json);
 
         Assert.That(actual.Map, Is.EqualTo(this.testGameState.Map));
     }
-    
+
     [Test]
     public void Deserialize_Always_ReturnExpectedGameStatePlayer()
     {
         var json = LoadFile("gamestate.json");
         var serializer = new Serializer();
-        
+
         var actual = serializer.Deserialize<GameState>(json);
 
         Assert.That(actual.Player, Is.EqualTo(this.testGameState.Player));
     }
-    
+
     [Test]
     public void Deserialize_Always_ReturnExpectedGameStateHero()
     {
         var json = LoadFile("gamestate.json");
         var serializer = new Serializer();
-        
+
         var actual = serializer.Deserialize<GameState>(json);
 
         Assert.That(actual.Hero, Is.EqualTo(this.testGameState.Hero));
     }
-    
+
     [Test]
     public void Deserialize_Always_ReturnExpectedGameStateAuth()
     {
         var json = LoadFile("gamestate.json");
         var serializer = new Serializer();
-        
+
         var actual = serializer.Deserialize<GameState>(json);
 
         Assert.That(actual.Auth, Is.EqualTo(this.testGameState.Auth));
     }
-    
+
     [Test]
     public void Deserialize_Always_ReturnExpectedGameStateAbilities()
     {
         var json = LoadFile("gamestate.json");
         var serializer = new Serializer();
-        
+
         var actual = serializer.Deserialize<GameState>(json);
 
         Assert.That(actual.Abilities, Is.EquivalentTo(this.testGameState.Abilities));
     }
-    
+
     [Test]
     public void Deserialize_Always_ReturnExpectedGameStateEvents()
     {
         var json = LoadFile("gamestate.json");
         var serializer = new Serializer();
-        
+
         var actual = serializer.Deserialize<GameState>(json);
 
         Assert.That(actual.Events, Is.EquivalentTo(this.testGameState.Events));
     }
-    
+
     [Test]
     public void Deserialize_Always_ReturnExpectedGameStateDotaMainItems()
     {
         var json = LoadFile("gamestate.json");
         var serializer = new Serializer();
-        
+
         var actual = serializer.Deserialize<GameState>(json);
 
         Assert.That(actual.Items.MainItems, Is.EquivalentTo(this.testGameState.Items.MainItems));
     }
-    
+
     [Test]
     public void Deserialize_Always_ReturnExpectedGameStateDotaStashItems()
     {
         var json = LoadFile("gamestate.json");
         var serializer = new Serializer();
-        
+
         var actual = serializer.Deserialize<GameState>(json);
 
         Assert.That(actual.Items.StashItems, Is.EquivalentTo(this.testGameState.Items.StashItems));
     }
-    
+
     [Test]
     public void Deserialize_Always_ReturnExpectedGameStateItemsTeleport()
     {
         var json = LoadFile("gamestate.json");
         var serializer = new Serializer();
-        
+
         var actual = serializer.Deserialize<GameState>(json);
 
         Assert.That(actual.Items.Teleport, Is.EqualTo(this.testGameState.Items.Teleport));
     }
-    
+
     [Test]
     public void Deserialize_Always_ReturnExpectedGameStateItemsNeutral()
     {
         var json = LoadFile("gamestate.json");
         var serializer = new Serializer();
-        
+
         var actual = serializer.Deserialize<GameState>(json);
 
         Assert.That(actual.Items.Neutral, Is.EqualTo(this.testGameState.Items.Neutral));

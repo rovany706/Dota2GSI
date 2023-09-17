@@ -18,7 +18,7 @@ namespace Dota2GSI
         private AutoResetEvent waitForConnection = new(false);
         private GameState currentGameState;
         private Thread _listenerThread;
-        private Serializer serializer = new Serializer();
+        private Serializer serializer = new();
 
         public GameState CurrentGameState
         {

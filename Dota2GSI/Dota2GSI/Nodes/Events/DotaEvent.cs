@@ -12,7 +12,10 @@ public enum DotaEventType
     [EnumMember(Value = "roshan_killed")] 
     RoshanKilled,
     [EnumMember(Value = "aegis_picked_up")]
-    AegisPickup
+    AegisPickup,
+    [EnumMember(Value = "tip")]
+    Tip,
+    Unknown
 }
 
 public abstract record DotaEvent(
@@ -41,4 +44,18 @@ public record AegisPickupEvent(
     DotaEventType EventType,
     int PlayerId,
     bool Snatched
+) : DotaEvent(GameTime, EventType);
+
+public record TipEvent(
+    int GameTime,
+    DotaEventType EventType,
+    int SenderPlayerId,
+    int ReceiverPlayerId,
+    int TipAmount
+) : DotaEvent(GameTime, EventType);
+
+public record UnknownEvent(
+    int GameTime,
+    DotaEventType EventType,
+    string Json
 ) : DotaEvent(GameTime, EventType);

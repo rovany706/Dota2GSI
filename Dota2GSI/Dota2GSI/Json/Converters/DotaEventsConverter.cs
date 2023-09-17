@@ -15,6 +15,11 @@ public class DotaEventsConverter : BaseDotaConverter<DotaEvent>
         var eventType = obj["event_type"]!.ToObject<DotaEventType>();
         var outputDotaEvent = CreateByEventType(eventType);
 
+        if (outputDotaEvent is UnknownEvent unknownEvent)
+        {
+            return unknownEvent with { Json = obj.ToString(Formatting.None) };
+        }
+
         using var subReader = obj.CreateReader();
         serializer.Populate(subReader, outputDotaEvent);
 
@@ -28,7 +33,8 @@ public class DotaEventsConverter : BaseDotaConverter<DotaEvent>
             DotaEventType.BountyPickup => new BountyPickupEvent(default, default, default, default, default, default),
             DotaEventType.RoshanKilled => new RoshanKilledEvent(default, default, default, default),
             DotaEventType.AegisPickup => new AegisPickupEvent(default, default, default, default),
-            _ => throw new ArgumentOutOfRangeException(nameof(eventType))
+            DotaEventType.Tip => new TipEvent(default, default, default, default, default),
+            _ => new UnknownEvent(default, default, default)
         };
     }
 }

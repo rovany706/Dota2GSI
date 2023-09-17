@@ -15,13 +15,13 @@ public record Player(
     string TeamName,
     int PlayerSlot,
     int TeamSlot,
-    int Gold,
-    int GoldReliable,
-    int GoldUnreliable,
-    int GoldFromHeroKills,
-    int GoldFromCreepKills,
-    int GoldFromIncome,
-    int GoldFromShared,
-    int Gpm,
-    int Xpm
+    uint Gold,
+    uint GoldReliable,
+    uint GoldUnreliable,
+    uint GoldFromHeroKills,
+    uint GoldFromCreepKills,
+    uint GoldFromIncome,
+    uint GoldFromShared,
+    uint Gpm,
+    uint Xpm
 );

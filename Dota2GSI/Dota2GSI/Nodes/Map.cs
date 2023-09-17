@@ -64,7 +64,15 @@ public enum DotaGameState
     /// </summary>
     DOTA_GAMERULES_STATE_CUSTOM_GAME_SETUP,
     
-    DOTA_GAMERULES_STATE_WAIT_FOR_MAP_TO_LOAD
+    /// <summary>
+    /// Game is loading
+    /// </summary>
+    DOTA_GAMERULES_STATE_WAIT_FOR_MAP_TO_LOAD,
+    
+    /// <summary>
+    /// Showcasing teams
+    /// </summary>
+    DOTA_GAMERULES_STATE_TEAM_SHOWCASE
 }
 
 /// <summary>

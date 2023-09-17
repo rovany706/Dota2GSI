@@ -9,7 +9,8 @@ public class DotaEventsTests : JsonDeserializeTests
     {
         new BountyPickupEvent(841, DotaEventType.BountyPickup, 5, "dire", 45, 225),
         new AegisPickupEvent(121, DotaEventType.AegisPickup, 0, false),
-        new RoshanKilledEvent(117, DotaEventType.RoshanKilled, "radiant", 0)
+        new RoshanKilledEvent(117, DotaEventType.RoshanKilled, "radiant", 0),
+        new TipEvent(539, DotaEventType.Tip, 7, 1, 50)
     };
 
     [Test]
@@ -17,7 +18,7 @@ public class DotaEventsTests : JsonDeserializeTests
     {
         var json = LoadFile("events.json");
         var serializer = new Serializer();
-        
+
         var actual = serializer.Deserialize<GameState>(json);
 
         Assert.That(actual.Events, Is.EquivalentTo(this.testDotaEvents));

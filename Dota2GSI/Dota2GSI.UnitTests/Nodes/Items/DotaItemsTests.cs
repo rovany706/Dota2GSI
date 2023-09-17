@@ -33,7 +33,7 @@ public class DotaItemsTests : JsonDeserializeTests
     {
         var json = LoadFile("items.json");
         var serializer = new Serializer();
-        
+
         var actual = serializer.Deserialize<GameState>(json);
 
         Assert.That(actual.Items.MainItems, Is.EquivalentTo(this.testMainItems));
@@ -44,7 +44,7 @@ public class DotaItemsTests : JsonDeserializeTests
     {
         var json = LoadFile("items.json");
         var serializer = new Serializer();
-        
+
         var actual = serializer.Deserialize<GameState>(json);
 
         Assert.That(actual.Items.StashItems, Is.EquivalentTo(this.testStashItems));
@@ -56,7 +56,7 @@ public class DotaItemsTests : JsonDeserializeTests
         var json = LoadFile("items.json");
         var expected = new DotaItem("item_timeless_relic", 0, 1, false, 0, true, 0);
         var serializer = new Serializer();
-        
+
         var actual = serializer.Deserialize<GameState>(json);
 
         Assert.That(actual.Items.Neutral, Is.EqualTo(expected));
@@ -68,7 +68,7 @@ public class DotaItemsTests : JsonDeserializeTests
         var json = LoadFile("items.json");
         var expected = new DotaItem("item_tpscroll", 0, 1, false, 62, false, 1);
         var serializer = new Serializer();
-        
+
         var actual = serializer.Deserialize<GameState>(json);
 
         Assert.That(actual.Items.Teleport, Is.EqualTo(expected));

@@ -19,6 +19,13 @@
       "event_type": "roshan_killed",
       "killed_by_team": "radiant",
       "killer_player_id": 0
+    },
+    {
+      "game_time": 539,
+      "event_type": "tip",
+      "sender_player_id": 7,
+      "receiver_player_id": 1,
+      "tip_amount": 50
     }
   ]
 }
