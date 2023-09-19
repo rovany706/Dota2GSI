@@ -113,7 +113,7 @@ namespace Dota2GSI
             catch (HttpListenerException)
             {
                 netListener.Close();
-                logger.LogError("Could not establish connection to {prefix}, port: {port}", netListener.Prefixes.First(), Port);
+                logger.LogError("Could not establish connection");
                 return false;
             }
 
