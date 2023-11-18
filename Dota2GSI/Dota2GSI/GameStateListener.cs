@@ -3,9 +3,9 @@
 using System;
 using System.ComponentModel;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Threading;
+using System.Threading.Tasks;
 using Dota2GSI.Json;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -17,23 +17,21 @@ using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Dota2GSI
 {
-    public delegate void NewGameStateHandler(GameState gameState);
-
     public class GameStateListener : IDisposable
     {
         private readonly ILogger<GameStateListener> logger;
         private readonly HttpListener netListener;
         private readonly AutoResetEvent waitForConnection = new(false);
         private GameState? currentGameState;
-        private Thread listenerThread;
         private readonly Serializer serializer = new();
+        private readonly CancellationTokenSource cts = new();
 
         public GameState? CurrentGameState
         {
-            get => currentGameState;
+            get => this.currentGameState;
             private set
             {
-                currentGameState = value;
+                this.currentGameState = value;
                 RaiseOnNewGameState();
             }
         }
@@ -72,15 +70,15 @@ namespace Dota2GSI
         {
             this.logger = loggerFactory?.CreateLogger<GameStateListener>()
                           ?? NullLoggerFactory.Instance.CreateLogger<GameStateListener>();
-            
+
             if (!uri.EndsWith("/"))
                 uri += "/";
 
             var port = GetPortFromUri(uri);
             Port = port;
 
-            netListener = new HttpListener();
-            netListener.Prefixes.Add(uri);
+            this.netListener = new HttpListener();
+            this.netListener.Prefixes.Add(uri);
         }
 
         private static int GetPortFromUri(string uriString)
@@ -103,27 +101,22 @@ namespace Dota2GSI
         public bool Start()
         {
             if (Running) return false;
-
-            listenerThread = new Thread(Run);
-
+            
             try
             {
-                netListener.Start();
+                this.netListener.Start();
             }
             catch (HttpListenerException)
             {
-                netListener.Close();
-                logger.LogError("Could not establish connection");
+                this.netListener.Close();
+                this.logger.LogError("Could not establish connection");
                 return false;
             }
 
             Running = true;
 
-            // Set this to true, so when the program wants to terminate,
-            // this thread won't stop the program from exiting.
-            listenerThread.IsBackground = true;
-
-            listenerThread.Start();
+            Task.Run(async () => await Run(this.cts.Token), this.cts.Token);
+            
             return true;
         }
 
@@ -133,35 +126,27 @@ namespace Dota2GSI
         public void Stop()
         {
             Running = false;
+            this.cts.Cancel();
         }
 
-        private void Run()
+        private async Task Run(CancellationToken cancellationToken)
         {
-            while (Running)
+            while (!cancellationToken.IsCancellationRequested)
             {
-                netListener.BeginGetContext(ReceiveGameState, netListener);
-                waitForConnection.WaitOne();
-                waitForConnection.Reset();
+                var context = await this.netListener.GetContextAsync();
+                var gameState = await ReceiveGameStateAsync(context);
+                CurrentGameState = gameState;
             }
 
-            netListener.Stop();
+            this.netListener.Stop();
         }
 
-        private void ReceiveGameState(IAsyncResult result)
+        private async Task<GameState?> ReceiveGameStateAsync(HttpListenerContext context)
         {
             try
             {
-                var context = netListener.EndGetContext(result);
                 var request = context.Request;
-                string json;
-
-                waitForConnection.Set();
-
-                using (var inputStream = request.InputStream)
-                {
-                    using (var sr = new StreamReader(inputStream))
-                        json = sr.ReadToEnd();
-                }
+                var json = await GetTextFromRequestBodyAsync(request);
 
                 using (var response = context.Response)
                 {
@@ -170,12 +155,22 @@ namespace Dota2GSI
                     response.Close();
                 }
 
-                CurrentGameState = TryDeserializeCurrentGameState(json);
+                return TryDeserializeCurrentGameState(json);
             }
             catch (ObjectDisposedException)
             {
                 // Intentionally left blank, when the Listener is closed.
             }
+
+            return null;
+        }
+
+        private static async Task<string> GetTextFromRequestBodyAsync(HttpListenerRequest request)
+        {
+            await using var inputStream = request.InputStream;
+            using var sr = new StreamReader(inputStream);
+
+            return await sr.ReadToEndAsync();
         }
 
         private GameState? TryDeserializeCurrentGameState(string json)
@@ -186,7 +181,7 @@ namespace Dota2GSI
             }
             catch (Exception e)
             {
-                logger.LogWarning("Deserialization failed:\n{e}", e);
+                this.logger.LogError("Deserialization failed:\n{e}\n{json}", e, json);
                 return null;
             }
         }
@@ -205,8 +200,8 @@ namespace Dota2GSI
         public void Dispose()
         {
             Stop();
-            waitForConnection.Dispose();
-            netListener.Close();
+            this.waitForConnection.Dispose();
+            this.netListener.Close();
             GC.SuppressFinalize(this);
         }
     }
