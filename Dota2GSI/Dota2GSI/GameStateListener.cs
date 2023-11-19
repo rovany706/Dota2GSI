@@ -1,7 +1,6 @@
 ﻿#nullable enable
 
 using System;
-using System.ComponentModel;
 using System.IO;
 using System.Net;
 using System.Threading;
@@ -21,18 +20,38 @@ namespace Dota2GSI
     {
         private readonly ILogger<GameStateListener> logger;
         private readonly HttpListener netListener;
-        private readonly AutoResetEvent waitForConnection = new(false);
         private GameState? currentGameState;
         private readonly Serializer serializer = new();
         private readonly CancellationTokenSource cts = new();
+        private readonly ReaderWriterLockSlim gameStateLock = new();
 
         public GameState? CurrentGameState
         {
-            get => this.currentGameState;
+            get
+            {
+                gameStateLock.EnterReadLock();
+                
+                try
+                {
+                    return this.currentGameState;
+                }
+                finally
+                {
+                    gameStateLock.ExitReadLock();
+                }
+            }
             private set
             {
-                this.currentGameState = value;
-                RaiseOnNewGameState();
+                gameStateLock.EnterWriteLock();
+                
+                try
+                {
+                    this.currentGameState = value;
+                }
+                finally
+                {
+                    gameStateLock.ExitWriteLock();
+                }
             }
         }
 
@@ -49,7 +68,7 @@ namespace Dota2GSI
         /// <summary>
         ///  Event for handing a newly received game state
         /// </summary>
-        public event EventHandler<GameState?> NewGameState;
+        public event EventHandler<GameState?>? NewGameState;
 
         /// <summary>
         /// A GameStateListener that listens for connections on http://localhost:port/
@@ -115,7 +134,7 @@ namespace Dota2GSI
 
             Running = true;
 
-            Task.Run(async () => await Run(this.cts.Token), this.cts.Token);
+            Task.Run(async () => await Listen(this.cts.Token), this.cts.Token);
             
             return true;
         }
@@ -129,13 +148,14 @@ namespace Dota2GSI
             this.cts.Cancel();
         }
 
-        private async Task Run(CancellationToken cancellationToken)
+        private async Task Listen(CancellationToken cancellationToken)
         {
             while (!cancellationToken.IsCancellationRequested)
             {
                 var context = await this.netListener.GetContextAsync();
                 var gameState = await ReceiveGameStateAsync(context);
                 CurrentGameState = gameState;
+                RaiseOnNewGameState();
             }
 
             this.netListener.Stop();
@@ -188,20 +208,14 @@ namespace Dota2GSI
 
         private void RaiseOnNewGameState()
         {
-            foreach (var d in NewGameState.GetInvocationList())
-            {
-                if (d.Target is ISynchronizeInvoke invoker)
-                    invoker.BeginInvoke(d, new object[] { this, CurrentGameState });
-                else
-                    d.DynamicInvoke(this, CurrentGameState);
-            }
+            NewGameState?.Invoke(this, CurrentGameState);
         }
 
         public void Dispose()
         {
             Stop();
-            this.waitForConnection.Dispose();
             this.netListener.Close();
+            gameStateLock.Dispose();
             GC.SuppressFinalize(this);
         }
     }
