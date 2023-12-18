@@ -130,7 +130,7 @@ namespace Dota2GSI
             Running = true;
 
             Task.Run(async () => await Listen(this.cts.Token), this.cts.Token);
-            
+             
             return true;
         }
 
@@ -145,15 +145,23 @@ namespace Dota2GSI
 
         private async Task Listen(CancellationToken cancellationToken)
         {
-            while (!cancellationToken.IsCancellationRequested)
+            try
             {
-                var context = await this.netListener.GetContextAsync();
-                var gameState = await ReceiveGameStateAsync(context);
-                CurrentGameState = gameState;
-                RaiseOnNewGameState();
+                while (!cancellationToken.IsCancellationRequested)
+                {
+                    var context = await this.netListener.GetContextAsync().WaitAsync(cancellationToken);
+                    var gameState = await ReceiveGameStateAsync(context);
+                    CurrentGameState = gameState;
+                    RaiseOnNewGameState();
+                }
             }
-
-            this.netListener.Stop();
+            catch (TaskCanceledException)
+            {
+            }
+            finally
+            {
+                this.netListener.Stop();
+            }
         }
 
         private async Task<GameState?> ReceiveGameStateAsync(HttpListenerContext context)
