@@ -33,6 +33,7 @@ public class DotaEventsConverter : BaseDotaConverter<DotaEvent>
             DotaEventType.BountyPickup => new BountyPickupEvent(default, default, default, default, default, default),
             DotaEventType.RoshanKilled => new RoshanKilledEvent(default, default, default, default),
             DotaEventType.AegisPickup => new AegisPickupEvent(default, default, default, default),
+            DotaEventType.AegisDenied => new AegisDeniedEvent(default, default, default),
             DotaEventType.Tip => new TipEvent(default, default, default, default, default),
             _ => new UnknownEvent(default, default, default)
         };

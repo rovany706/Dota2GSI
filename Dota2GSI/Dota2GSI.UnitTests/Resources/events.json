@@ -21,6 +21,11 @@
       "killer_player_id": 0
     },
     {
+      "game_time": 150,
+      "event_type": "aegis_denied",
+      "player_id": 5
+    },
+    {
       "game_time": 539,
       "event_type": "tip",
       "sender_player_id": 7,

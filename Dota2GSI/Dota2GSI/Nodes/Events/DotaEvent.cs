@@ -15,6 +15,8 @@ public enum DotaEventType
     AegisPickup,
     [EnumMember(Value = "tip")]
     Tip,
+    [EnumMember(Value = "aegis_denied")]
+    AegisDenied,
     Unknown
 }
 
@@ -52,6 +54,12 @@ public record TipEvent(
     int SenderPlayerId,
     int ReceiverPlayerId,
     int TipAmount
+) : DotaEvent(GameTime, EventType);
+
+public record AegisDeniedEvent(
+    int GameTime,
+    DotaEventType EventType,
+    int PlayerId
 ) : DotaEvent(GameTime, EventType);
 
 public record UnknownEvent(
