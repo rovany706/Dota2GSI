@@ -24,7 +24,7 @@ public class GameStateTests : JsonDeserializeTests
             new DotaAbility("plus_guild_banner", 1, true, false, true, 0, false),
             new DotaAbility("seasonal_10th_anniversary_party_hat", 1, true, false, true, 0, false),
         }),
-        new Hero(7711, -7878, 100, "npc_dota_hero_tusk", 30, 64400, true, 0, 7929, 0, 3736, 3745, 99, 1047, 1047, 100,
+        new Hero(1, 7711, -7878, 100, "npc_dota_hero_tusk", 30, 64400, true, 0, 7929, 0, 3736, 3745, 99, 1047, 1047, 100,
             false, false, false, false, false, false, false, false, false, false, false, true, true, true, true, true,
             true, true, true, 7),
         new Auth("token"),

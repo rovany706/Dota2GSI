@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 namespace Dota2GSI.Nodes;
 
 public record Hero(
+    int Facet,
     int Xpos,
     int Ypos,
     int Id,
